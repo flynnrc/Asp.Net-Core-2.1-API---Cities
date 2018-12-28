@@ -15,14 +15,17 @@ namespace CityInfo.API.Controllers
 	{
 		private ILogger<PointsOfInterestController> _logger; //logger will automatically use its type name as category name
 		private IMailService _mailService;
+		private ICityInfoRepository _cityInfoRepository;
 
-		public PointsOfInterestController(ILogger<PointsOfInterestController> logger, IMailService mailService)
+		public PointsOfInterestController(ILogger<PointsOfInterestController> logger, IMailService mailService, ICityInfoRepository cityInfoRepository)
 		{
 			_logger = logger;
 			/*alternative to constructor injection (although it is advised to use constructor injection)
 			 * HttpContext.RequestServices.GetService()
 			*/
 			_mailService = mailService;
+			_cityInfoRepository = cityInfoRepository;
+
 		}
 
 		[HttpGet("{cityId}/pointsofinterest")]
@@ -30,15 +33,30 @@ namespace CityInfo.API.Controllers
 		{
 			try
 			{
-				var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
-				if (city == null)
-				{
-					_logger.LogInformation($"City with id {cityId} wasn't found when accessing points of interest.");
-					//3rd party logging to file services are available on nuget and could be injected in example: NLogger
-					_mailService.Send("to", "from");
-					return NotFound();
-				}
-				return Ok(city.PointsOfInterest);
+                //var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+                var pointsOfInterestForACity = _cityInfoRepository.GetPointsOfInterestsForCity(cityId);
+
+                if (!_cityInfoRepository.CityExists(cityId))
+                {
+                    _logger.LogInformation($"City with id {cityId} wasn't found when accessing points of interest.");
+                    //3rd party logging to file services are available on nuget and could be injected in example: NLogger
+                    _mailService.Send("to", "from");
+                    return NotFound();
+                }
+
+                var pointsOfInterestForCity = _cityInfoRepository.GetPointsOfInterestsForCity(cityId);
+
+                var results = new List<PointOfInterestDto>();
+                foreach (var poi in pointsOfInterestForCity)
+                {
+                    results.Add(new PointOfInterestDto()
+                    {
+                        Id = poi.Id,
+                        Name = poi.Name,
+                        Description = poi.Description
+                    });
+                }
+                return Ok(results);
 			}
 			catch(Exception ex)
 			{
@@ -51,20 +69,27 @@ namespace CityInfo.API.Controllers
 		[HttpGet("{cityId}/pointsofinterest/{id}", Name = "GetPointOfInterest")]
 		public IActionResult GetPointOfInterest(int cityId, int id)
 		{
-			var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
-			if (city == null)
-			{
-				return NotFound();
-			}
+            if (!_cityInfoRepository.CityExists(cityId))
+            {
+                return NotFound();
+            }
 
-			var pointOfInterest = city.PointsOfInterest.FirstOrDefault(p => p.Id == id);
-			if (pointOfInterest == null)
-			{
-				return NotFound();
-			}
+            var poi = _cityInfoRepository.GetPointOfInterestsForCity(cityId, id);
+            if(poi == null)
+            {
+                return NotFound();
+            }
 
-			return Ok(pointOfInterest);
-		}
+            var poiResult = new PointOfInterestDto()
+            {
+                Id = poi.Id,
+                Name = poi.Name,
+                Description = poi.Description
+            };
+
+            return Ok(poiResult);
+
+        }
 
 		[HttpPost("{cityId}/pointsofinterest")]
 		public IActionResult CreatePointOfInterest(int cityId, [FromBody] PointOfInterestForCreationDto pointOfInterest)

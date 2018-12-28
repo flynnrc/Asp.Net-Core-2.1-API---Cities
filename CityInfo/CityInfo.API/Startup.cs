@@ -63,19 +63,14 @@ namespace CityInfo.API
                 ;
 
 
-            /*3 ways to add custom services
-             * Only other step is to include it in relevant constructors usually the controller
-             */
             #if DEBUG
-                services.AddTransient<IMailService,LocalMailService>();//light and stateless / one off
-                                                                       //services.AddScoped();//once per request
-                                                                       //services.AddSingleton();//the first time it's requested
-#else
+                services.AddTransient<IMailService,LocalMailService>();//light and stateless 
+            #else
                 services.AddTransient<IMailService,CloudMailService>();//light and stateless / one off
-#endif
+            #endif
 
             services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(Startup.Configuration["connectionStrings:cityInfoDBConnectionString"]));
-           
+            services.AddScoped<ICityInfoRepository, CityInfoRepository>(); //for repos scoped makes the most sense
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
