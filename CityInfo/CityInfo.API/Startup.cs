@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CityInfo.API.Entities;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -66,21 +68,25 @@ namespace CityInfo.API
              */
             #if DEBUG
                 services.AddTransient<IMailService,LocalMailService>();//light and stateless / one off
-                //services.AddScoped();//once per request
-                //services.AddSingleton();//the first time it's requested
-            #else
+                                                                       //services.AddScoped();//once per request
+                                                                       //services.AddSingleton();//the first time it's requested
+#else
                 services.AddTransient<IMailService,CloudMailService>();//light and stateless / one off
-            #endif
+#endif
+
+            services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(Startup.Configuration["connectionStrings:cityInfoDBConnectionString"]));
            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CityInfoContext cityInfoContext)
         {
 
             loggerFactory.AddConsole();
             loggerFactory.AddDebug(/*can choose a specific log level but default is fine*/);//=> add an instance to any controller to log whatever is desired
 
+            //supplying seed data if there isn't any
+            cityInfoContext.EnsureSeedDataForContext();
 
             if (env.IsDevelopment())
             {
