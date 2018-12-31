@@ -1,0 +1,312 @@
+{
+	"info": {
+		"_postman_id": "f913a894-0c55-43e8-af52-2651072f63e4",
+		"name": "CityInfo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get A City with a point of interest",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44318/api/cities/1/?includePointsOfInterest=true",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44318",
+					"path": [
+						"api",
+						"cities",
+						"1",
+						""
+					],
+					"query": [
+						{
+							"key": "includePointsOfInterest",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Cities XML",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44318/api/cities/1/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44318",
+					"path": [
+						"api",
+						"cities",
+						"1",
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": " application/xml",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get TryToGetNonexistent Api",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44318/api/cities/4/pointsofinterest",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44318",
+					"path": [
+						"api",
+						"cities",
+						"4",
+						"pointsofinterest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post POI",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Pere Lachaise\",\n\t\"description\": \"Famous cemetery where Jim Morrison and Oscar Wilde are buried.\"\n}"
+				},
+				"url": {
+					"raw": "https://localhost:44318/api/cities/3/pointsofinterest",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44318",
+					"path": [
+						"api",
+						"cities",
+						"3",
+						"pointsofinterest"
+					]
+				},
+				"description": "post some child data"
+			},
+			"response": []
+		},
+		{
+			"name": "Post POI 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"test\",\n\t\"description\": \"yolo\"\n}"
+				},
+				"url": {
+					"raw": "https://localhost:44318/api/cities/1/pointsofinterest",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44318",
+					"path": [
+						"api",
+						"cities",
+						"1",
+						"pointsofinterest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get A City POI",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44318/api/cities/1/pointsofinterest/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44318",
+					"path": [
+						"api",
+						"cities",
+						"1",
+						"pointsofinterest",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Total Update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \" Updated - Central Park\",\n\t\"description\": \"Updated - The most visited urban park in the United States\"\n}"
+				},
+				"url": {
+					"raw": "https://localhost:44318/api/cities/1/pointsofinterest/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44318",
+					"path": [
+						"api",
+						"cities",
+						"1",
+						"pointsofinterest",
+						"1"
+					]
+				},
+				"description": "updating child info"
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Partial Update",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"op\": \"replace\",\n\t\t\"path\":\"/name\",\n\t\t\"value\": \"Updated - Central Park!\"\n\t}\n]"
+				},
+				"url": {
+					"raw": "https://localhost:44318/api/cities/1/pointsofinterest/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44318",
+					"path": [
+						"api",
+						"cities",
+						"1",
+						"pointsofinterest",
+						"1"
+					]
+				},
+				"description": "patch"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete POI",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44318/api/cities/1/pointsofinterest/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44318",
+					"path": [
+						"api",
+						"cities",
+						"1",
+						"pointsofinterest",
+						"1"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": " application/xml",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
