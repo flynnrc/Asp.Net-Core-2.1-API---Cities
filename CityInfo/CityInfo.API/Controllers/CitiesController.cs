@@ -1,4 +1,5 @@
-﻿using CityInfo.API.Models;
+﻿using AutoMapper;
+using CityInfo.API.Models;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,25 +23,24 @@ namespace CityInfo.API.Controllers
         [HttpGet()]
         public IActionResult GetCities()
         {
-            ////json result works, however, we can add flexibilty by using IActionResult and response methods
-            //var temp = new JsonResult(CitiesDataStore.Current.Cities);
-            //temp.StatusCode = 200;
-            //return new JsonResult(CitiesDataStore.Current.Cities);
-
-            //return Ok(CitiesDataStore.Current.Cities);//
 
             var cityEntities = _cityInfoRepository.GetCities();
 
-            var results = new List<CityWithoutPointOfInterestDto>();
-            foreach(var cityEntity in cityEntities)
-            {
-                results.Add(new CityWithoutPointOfInterestDto()
-                {
-                    Id = cityEntity.Id,
-                    Description = cityEntity.Description,
-                    Name = cityEntity.Name
-                });
-            }
+            var results = Mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(cityEntities);
+
+            /*
+             * //way of manually mapping before switching to automapper
+               var results = new List<CityWithoutPointOfInterestDto>();
+               foreach(var cityEntity in cityEntities)
+               {
+                   results.Add(new CityWithoutPointOfInterestDto()
+                   {
+                       Id = cityEntity.Id,
+                       Description = cityEntity.Description,
+                       Name = cityEntity.Name
+                   });
+               }
+           */
 
             return Ok(results);
         }
@@ -58,31 +58,11 @@ namespace CityInfo.API.Controllers
 
             if (includePointsOfInterest)
             {
-                var cityResult = new CityDto()
-                {
-                    Id = city.Id,
-                    Name = city.Name,
-                    Description = city.Description
-                };
-
-                foreach(var poi in city.PointsOfInterest)
-                {
-                    cityResult.PointsOfInterest.Add(new PointOfInterestDto()
-                    {
-                        Id = poi.Id,
-                        Name = poi.Name,
-                        Description = poi.Description
-                    });
-                }
+                var cityResult = Mapper.Map<CityDto>(city);
                 return Ok(cityResult);
             }
 
-            var CityWithoutPointOfInterestDtoResults = new CityWithoutPointOfInterestDto()
-            {
-                Id = city.Id,
-                Description = city.Description,
-                Name = city.Name
-            };
+            var CityWithoutPointOfInterestDtoResults = Mapper.Map<CityWithoutPointOfInterestDto>(city);
 
             return Ok(CityWithoutPointOfInterestDtoResults);
         }
