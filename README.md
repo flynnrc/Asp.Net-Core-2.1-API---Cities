@@ -1,2 +1,2 @@
 # AspdotnetCore2.1API
-An Cities API to practice Asp dotnet Core2.1
+A Cities API to practice Asp dotnet Core2.1 along with Auto Mapper
